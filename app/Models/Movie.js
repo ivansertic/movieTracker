@@ -6,7 +6,7 @@ const Model = use('Model')
 class Movie extends Model {
   static boot(){
     super.boot()
-    super.addTrait("paginable")
+    this.addTrait("Paginable")
   }
 
   media(){

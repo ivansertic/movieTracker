@@ -6,7 +6,7 @@ const Model = use('Model')
 class Actor extends Model {
   static boot(){
     super.boot()
-    this.addTrait("paginable")
+    this.addTrait("Paginable")
   }
 
   movies(){

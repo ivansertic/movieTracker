@@ -18,6 +18,7 @@ const Route = use('Route')
 
 _groupRoutes("Auth").prefix("api/auth")
 _groupRoutes("User").prefix("api/user")
+_groupRoutes("Movie").prefix("api/movie")
 
 
 function _groupRoutes(group){
