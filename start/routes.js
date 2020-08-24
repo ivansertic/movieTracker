@@ -17,7 +17,7 @@
 const Route = use('Route')
 
 _groupRoutes("Auth").prefix("api/auth")
-
+_groupRoutes("User").prefix("api/user")
 
 
 function _groupRoutes(group){
