@@ -16,4 +16,25 @@ module.exports = Route.group(()=>{
    */
 
   Route.post("/create","MovieController.addMovie").middleware(["getUser"])
+
+  /**
+   * /api/movie/:id
+   *
+   * id is movie id
+   */
+
+  Route.delete("/:id","MovieController.deleteMovie").middleware(["getUser"])
+
+  /**
+   * /api/movies/finished
+   * @routeParams {page}
+   * @routeParams {limit}
+   */
+  Route.get("/finished","MovieController.getFinishedMovies").middleware(["getUser"])
+
+  Route.get("/watch","MovieController.getMoviesToWatch").middleware(["getUser"])
+
+  Route.get("/single/:id","MovieController.getSingleMovie").middleware(["getUser"])
+
+  Route.get("/test","MovieController.editMovie").middleware(["getUser"])
 })

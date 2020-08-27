@@ -5,7 +5,9 @@ const Media = use("App/Models/Media")
 const Movie = use("App/Models/Movie")
 const MovieUser = use("App/Models/MovieUser")
 const {validate, sanitize}= use("Validator")
+const fs = use("fs")
 
+const Moment = use("moment")
 class MovieController {
 
   async addMovie({request,response,user}){
@@ -39,8 +41,9 @@ class MovieController {
       })
     }
 
+    const pictureName = `${Moment().format("YYYY-MM-DD-HH-mm-ss")}.jpg`
     await movieCover.move(Helpers.publicPath("/resources/media"),{
-      name:`${allParams.title}.jpg`
+      name: `${pictureName}`
     })
 
     if(!movieCover.moved()){
@@ -67,27 +70,95 @@ class MovieController {
     })
 
     await Media.create({
-      path: `resources/media/${allParams.title}.jpg`,
+      path: `resources/media/${pictureName}`,
       movie_id:movie.id
     })
 
     return response.ok()
   }
 
-  async editMovie({request,response,user}){
+  async editMovie({request,response,user,params}){
+
+    const movie = await Movie.query().whereHas("users",(b)=>{b.where("user_id",user.id)}).with("media").where("id",57).first()
+
+    fs.unlink(`./public/${movie.$relations.media.path}`,(err) => {
+      if (err) {
+        console.log("failed to delete local image:" + err);
+      } else {
+        console.log('successfully deleted local image');
+      }
+    })
 
   }
 
-  async deleteMovie({request, response}){
+  async deleteMovie({response, params,user}){
 
+    const movie = await Movie.query()
+      .whereHas("users",(b)=>{
+        b.where("user_id",user.id)
+      })
+      .where("id", params.id)
+      .first()
+
+    if(!movie){
+      return response.notFound({
+        _message:"Movie does not exist"
+      })
+    }
+
+    movie.delete()
+
+    return response.ok()
   }
 
   async getFinishedMovies({request,response, user}){
+
+    const allParams = sanitize(request.get(),{
+      page:"to_int",
+      limit:"to_int"
+    })
+    const movies = await Movie.query()
+      .whereHas("users",(b)=>{
+        b.where("user_id",user.id)
+        b.where("finished",true)
+      })
+      .orderBy("created_at","desc")
+      .paginable(allParams.page, allParams.limit)
+
+
+    return response.ok(movies)
 
   }
 
   async getMoviesToWatch({request,response,user}){
 
+    const allParams = sanitize(request.get(),{
+      page:"to_int",
+      limit:"to_int"
+    })
+    const movies = await Movie.query()
+      .whereHas("users",(b)=>{
+        b.where("user_id",user.id)
+        b.where("finished",false)
+      })
+      .orderBy("created_at","desc")
+      .paginable(allParams.page, allParams.limit)
+
+
+    return response.ok(movies)
+  }
+
+  async getSingleMovie({response,user,params}){
+
+    const movie = await Movie.query().whereHas("users", (b)=>{ b.where("user_id",user.id)}).with("media").where("id",params.id).first()
+
+    if(!movie){
+      return response.notFound({
+        _message:"Movie does not exist"
+      })
+    }
+
+    return response.ok(movie)
   }
 }
 

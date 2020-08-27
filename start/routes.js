@@ -17,8 +17,8 @@
 const Route = use('Route')
 
 _groupRoutes("Auth").prefix("api/auth")
-_groupRoutes("User").prefix("api/user")
-_groupRoutes("Movie").prefix("api/movie")
+_groupRoutes("User").prefix("api/user").middleware(["auth:jwt"])
+_groupRoutes("Movie").prefix("api/movie").middleware(["auth:jwt"])
 
 
 function _groupRoutes(group){
