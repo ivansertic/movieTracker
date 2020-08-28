@@ -36,5 +36,5 @@ module.exports = Route.group(()=>{
 
   Route.get("/single/:id","MovieController.getSingleMovie").middleware(["getUser"])
 
-  Route.get("/test","MovieController.editMovie").middleware(["getUser"])
+  Route.post("/update/:id","MovieController.editMovie").middleware(["getUser"])
 })
