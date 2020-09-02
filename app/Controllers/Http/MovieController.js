@@ -184,6 +184,8 @@ class MovieController {
         b.where("user_id",user.id)
         b.where("finished",true)
       })
+      .with("media")
+      .with("actors")
       .orderBy("created_at","desc")
       .paginable(allParams.page, allParams.limit)
 
@@ -203,6 +205,8 @@ class MovieController {
         b.where("user_id",user.id)
         b.where("finished",false)
       })
+      .with("media")
+      .with("actors")
       .orderBy("created_at","desc")
       .paginable(allParams.page, allParams.limit)
 
