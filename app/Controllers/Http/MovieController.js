@@ -53,7 +53,7 @@ class MovieController {
     const movie = await Movie.create({
       title:allParams.title,
       description:allParams.description,
-      genre:allParams.description,
+      genre:allParams.genre,
       duration:allParams.duration
     })
 
